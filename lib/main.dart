@@ -29,35 +29,24 @@ class MyHomePageState extends State {
   double contentWidth  = 0.0;
   double contentHeight = 0.0;
 
+  // フローティングアクションボタンの状態管理クラス
+  MyCustomAnimationControl? hogeSlideButtonControl;
+
   ScrollController? hogeScrollController;
   double hogeScroll = 0.0; // 現在のスクロール位置
   double maxHogeScroll = 0.0; // スクロールできる最大の位置
   void onHogeScroll(){
     hogeScroll = hogeScrollController!.offset;
-    maxHogeScroll =
-        hogeScrollController!.position.maxScrollExtent;
+    maxHogeScroll = hogeScrollController!.position.maxScrollExtent;
 
     if( hogeScroll < contentHeight / 5 ){
       // フローティングアクションボタンを隠す
-      if( !hide ) {
-        hide = true;
-        setState(() {
-          hogeAnimationControl = CustomAnimationControl.playFromStart;
-        });
-      }
+      hogeSlideButtonControl!.hide();
     } else {
       // フローティングアクションボタンを表示させる
-      if( hide ) {
-        hide = false;
-        setState(() {
-          hogeAnimationControl = CustomAnimationControl.playFromStart;
-        });
-      }
+      hogeSlideButtonControl!.show();
     }
   }
-
-  bool hide = true;
-  CustomAnimationControl? hogeAnimationControl;
 
   void scrollTop(){
     setState(() {
@@ -68,6 +57,10 @@ class MyHomePageState extends State {
   @override
   void initState() {
     super.initState();
+
+    // フローティングアクションボタンの状態管理クラス
+    hogeSlideButtonControl = MyCustomAnimationControl( setState: setState, hidden: true );
+
     hogeScrollController = ScrollController();
     hogeScrollController!.addListener( onHogeScroll );
   }
@@ -85,14 +78,7 @@ class MyHomePageState extends State {
 
     bool scroll = false;
     if( !scroll ){
-
-      Widget body = Container(
-        width: contentWidth,
-        height: contentHeight,
-        color: Colors.black12,
-      );
-
-      bool positioned = true;
+      bool positioned = false;
       if( !positioned ) {
 
         // フローティングアクションボタンの位置
@@ -118,26 +104,34 @@ class MyHomePageState extends State {
           appBar: AppBar(
               toolbarHeight: 0
           ),
-          body: body,
+          body: Container(
+            width: contentWidth,
+            height: contentHeight,
+            color: Colors.black12,
+          ),
           floatingActionButton: floating,
           floatingActionButtonLocation: floatingLocation,
         );
 
       } else {
 
-//        Widget floating = test3();
+        Widget floating = test3();
 //        Widget floating = test4();
 //        Widget floating = test5();
 //        Widget floating = test6();
 //        Widget floating = test7(false);
-        Widget floating = test7(true);
+//        Widget floating = test7(true);
 
         return Scaffold(
           appBar: AppBar(
               toolbarHeight: 0
           ),
           body: Stack( children: [
-            body,
+            Container(
+              width: contentWidth,
+              height: contentHeight,
+              color: Colors.black12,
+            ),
             floating,
           ] ),
         );
@@ -154,25 +148,58 @@ class MyHomePageState extends State {
         ));
       }
 
-      SingleChildScrollView scrollView = SingleChildScrollView(
-        controller: hogeScrollController,
-        scrollDirection: Axis.vertical,
-        child: Column( children: list ),
-      );
-
-      Widget floating = test8( this, contentWidth, contentHeight, hide, hogeAnimationControl, false );
-//      Widget floating = test8( this, contentWidth, contentHeight, hide, hogeAnimationControl, true );
+      Widget floating = test8( this, contentWidth, contentHeight, hogeSlideButtonControl, false );
+//      Widget floating = test8( this, contentWidth, contentHeight, hogeSlideButtonControl, true );
 
       return Scaffold(
         appBar: AppBar(
             toolbarHeight: 0
         ),
         body: Stack( children: [
-          scrollView,
+          SingleChildScrollView(
+            controller: hogeScrollController,
+            scrollDirection: Axis.vertical,
+            child: Column( children: list ),
+          ),
           floating,
         ] ),
       );
 
+    }
+  }
+}
+
+// フローティングアクションボタンの状態管理クラス
+class MyCustomAnimationControl {
+  Function(void Function()) setState;
+  bool hidden;
+  MyCustomAnimationControl({required this.setState, required this.hidden});
+
+  CustomAnimationControl? _control;
+  CustomAnimationControl getControl(){
+    return _control!;
+  }
+
+  bool isInitial(){
+    return _control == null;
+  }
+  bool isHidden(){
+    return hidden;
+  }
+  void show(){
+    if( hidden ) {
+      hidden = false;
+      setState(() {
+        _control = CustomAnimationControl.playFromStart;
+      });
+    }
+  }
+  void hide(){
+    if( !hidden ) {
+      hidden = true;
+      setState(() {
+        _control = CustomAnimationControl.playFromStart;
+      });
     }
   }
 }

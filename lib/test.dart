@@ -402,7 +402,7 @@ Widget slideControlWithOpacity(CustomAnimationControl control, {required Widget 
   );
 }
 
-Widget test8( MyHomePageState state, double contentWidth, double contentHeight, bool hide, CustomAnimationControl? control, bool opacity ) {
+Widget test8( MyHomePageState state, double contentWidth, double contentHeight, MyCustomAnimationControl? control, bool opacity ) {
   Widget button = SizedBox(
     width: 50,
     height: 50,
@@ -424,15 +424,21 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
       },
     ),
   );
-
-  if( hide ){
+  if( control!.isInitial() ){
+    return Positioned(
+        left: contentWidth + 10,
+        top: contentHeight - 60,
+        child: button
+    );
+  }
+  if( control.isHidden() ){
     // フローティングアクションボタンを隠す
     if( !opacity ){
       return Positioned(
           left: contentWidth + 10,
           top: contentHeight - 60,
-          child: (control == null) ? button : slideControl(
-            control,
+          child: slideControl(
+            control.getControl(),
             tween: Tween(begin: -70.0, end: 0.0),
             curve: Curves.easeOut,
             duration: Duration(milliseconds: 500),
@@ -443,8 +449,8 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
       return Positioned(
           left: contentWidth + 10,
           top: contentHeight - 60,
-          child: (control == null) ? button : slideControlWithOpacity(
-            control,
+          child: slideControlWithOpacity(
+            control.getControl(),
             translate: Tween(begin: -70.0, end: 0.0),
             curve: Curves.easeOut,
             opacity: Tween(begin: 1.0, end: 0.0),
@@ -459,8 +465,8 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
       return Positioned(
           left: contentWidth + 10,
           top: contentHeight - 60,
-          child: (control == null) ? button : slideControl(
-            control,
+          child: slideControl(
+            control.getControl(),
             tween: Tween(begin: 0.0, end: -70.0),
             curve: Curves.easeOut,
             duration: Duration(milliseconds: 500),
@@ -471,8 +477,8 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
       return Positioned(
           left: contentWidth + 10,
           top: contentHeight - 60,
-          child: (control == null) ? button : slideControlWithOpacity(
-            control,
+          child: slideControlWithOpacity(
+            control.getControl(),
             translate: Tween(begin: 0.0, end: -70.0),
             curve: Curves.easeOut,
             opacity: Tween(begin: 0.0, end: 1.0),
