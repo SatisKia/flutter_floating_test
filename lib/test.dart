@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 import 'main.dart';
+import 'widget.dart';
 
 FloatingActionButton test1( bool mini ) {
   return FloatingActionButton(
@@ -48,53 +49,29 @@ Positioned test4() {
 }
 
 Positioned test5() {
-  Widget button1 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.blue),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button1 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.blue,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed blue');
     },
   );
-  Widget button2 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.amber),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button2 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.amber,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed amber');
     },
   );
-  Widget button3 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.pink),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button3 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.pink,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed pink');
     },
@@ -183,88 +160,30 @@ Positioned test6() {
   );
 }
 
-Widget slide({required Widget child, required Duration delay, required Tween<double> tween, required Curve curve, required Duration duration}) {
-  return PlayAnimation<double>(
-    delay: delay,
-    tween: tween,
-    curve: curve,
-    duration: duration,
-    child: child,
-    builder: (context, child, value) => Transform.translate(
-        offset: Offset(value, 0.0),
-        child: child
-    ),
-  );
-}
-
-Widget slideWithOpacity({required Widget child, required Duration delay, required Tween<double> translate, required Curve curve, required Tween<double> opacity, required Duration duration}) {
-  MultiTween<String> tween = MultiTween<String>();
-  tween.add('translate', translate, duration, curve);
-  tween.add('opacity', opacity, duration);
-
-  return PlayAnimation<MultiTweenValues<String>>(
-    delay: delay,
-    tween: tween,
-    duration: tween.duration,
-    child: child,
-    builder: (context, child, value) => Transform.translate(
-      offset: Offset(value.get('translate'), 0.0),
-      child: Opacity(
-          opacity: value.get('opacity'),
-          child: child
-      ),
-    ),
-  );
-}
-
 Positioned test7(bool opacity) {
-  Widget button1 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.blue),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button1 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.blue,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed blue');
     },
   );
-  Widget button2 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.amber),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button2 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.amber,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed amber');
     },
   );
-  Widget button3 = ElevatedButton(
-    child: const Icon(
-        Icons.flutter_dash,
-        color: Colors.white
-    ),
-    style: ButtonStyle(
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-      shape: MaterialStateProperty.all(const CircleBorder(
-        side: BorderSide.none,
-      )),
-      backgroundColor: MaterialStateProperty.all(Colors.pink),
-      elevation: MaterialStateProperty.all(8.0),
-    ),
+  Widget button3 = MyFloatingActionButton(
+    Icons.flutter_dash,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.pink,
+    elevation: 8.0,
     onPressed: () {
       debugPrint('onPressed pink');
     },
@@ -368,57 +287,12 @@ Positioned test7(bool opacity) {
   }
 }
 
-Widget slideControl(CustomAnimationControl control, {required Widget child, required Tween<double> tween, required Curve curve, required Duration duration}) {
-  return CustomAnimation<double>(
-    control: control,
-    tween: tween,
-    curve: curve,
-    duration: duration,
-    child: child,
-    builder: (context, child, value) => Transform.translate(
-        offset: Offset(value, 0.0),
-        child: child
-    ),
-  );
-}
-
-Widget slideControlWithOpacity(CustomAnimationControl control, {required Widget child, required Tween<double> translate, required Curve curve, required Tween<double> opacity, required Duration duration}) {
-  MultiTween<String> tween = MultiTween<String>();
-  tween.add('translate', translate, duration, curve);
-  tween.add('opacity', opacity, duration);
-
-  return CustomAnimation<MultiTweenValues<String>>(
-    control: control,
-    tween: tween,
-    duration: tween.duration,
-    child: child,
-    builder: (context, child, value) => Transform.translate(
-      offset: Offset(value.get('translate'), 0.0),
-      child: Opacity(
-          opacity: value.get('opacity'),
-          child: child
-      ),
-    ),
-  );
-}
-
-Widget test8( MyHomePageState state, double contentWidth, double contentHeight, MyCustomAnimationControl? control, bool opacity ) {
+Widget test8( MyHomePageState state, MyCustomAnimationControl? control, double contentWidth, double contentHeight, bool opacity ) {
   Widget button = SizedBox(
     width: 50,
     height: 50,
-    child: ElevatedButton(
-      child: const Icon(
-          Icons.arrow_upward,
-          color: Colors.white
-      ),
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
-        shape: MaterialStateProperty.all(const CircleBorder(
-          side: BorderSide.none,
-        )),
-        backgroundColor: MaterialStateProperty.all(Colors.blue),
-        elevation: MaterialStateProperty.all(8.0),
-      ),
+    child: MyFloatingActionButton(
+      Icons.arrow_upward,
       onPressed: () {
         state.scrollTop();
       },
@@ -430,9 +304,8 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
         top: contentHeight - 60,
         child: button
     );
-  }
-  if( control.isHidden() ){
-    // フローティングアクションボタンを隠す
+  } else if( control.isHidden() ){
+    // スライドボタンを隠す
     if( !opacity ){
       return Positioned(
           left: contentWidth + 10,
@@ -460,7 +333,7 @@ Widget test8( MyHomePageState state, double contentWidth, double contentHeight, 
       );
     }
   } else {
-    // フローティングアクションボタンを表示させる
+    // スライドボタンを表示させる
     if( !opacity ){
       return Positioned(
           left: contentWidth + 10,

@@ -25,11 +25,79 @@ class MyHomePage extends StatefulWidget {
   State createState() => MyHomePageState();
 }
 
+Widget slide({required Widget child, required Duration delay, required Tween<double> tween, required Curve curve, required Duration duration}) {
+  return PlayAnimation<double>(
+    delay: delay,
+    tween: tween,
+    curve: curve,
+    duration: duration,
+    child: child,
+    builder: (context, child, value) => Transform.translate(
+        offset: Offset(value, 0.0),
+        child: child
+    ),
+  );
+}
+
+Widget slideWithOpacity({required Widget child, required Duration delay, required Tween<double> translate, required Curve curve, required Tween<double> opacity, required Duration duration}) {
+  MultiTween<String> tween = MultiTween<String>();
+  tween.add('translate', translate, duration, curve);
+  tween.add('opacity', opacity, duration);
+
+  return PlayAnimation<MultiTweenValues<String>>(
+    delay: delay,
+    tween: tween,
+    duration: tween.duration,
+    child: child,
+    builder: (context, child, value) => Transform.translate(
+      offset: Offset(value.get('translate'), 0.0),
+      child: Opacity(
+          opacity: value.get('opacity'),
+          child: child
+      ),
+    ),
+  );
+}
+
+Widget slideControl(CustomAnimationControl control, {required Widget child, required Tween<double> tween, required Curve curve, required Duration duration}) {
+  return CustomAnimation<double>(
+    control: control,
+    tween: tween,
+    curve: curve,
+    duration: duration,
+    child: child,
+    builder: (context, child, value) => Transform.translate(
+        offset: Offset(value, 0.0),
+        child: child
+    ),
+  );
+}
+
+Widget slideControlWithOpacity(CustomAnimationControl control, {required Widget child, required Tween<double> translate, required Curve curve, required Tween<double> opacity, required Duration duration}) {
+  MultiTween<String> tween = MultiTween<String>();
+  tween.add('translate', translate, duration, curve);
+  tween.add('opacity', opacity, duration);
+
+  return CustomAnimation<MultiTweenValues<String>>(
+    control: control,
+    tween: tween,
+    duration: tween.duration,
+    child: child,
+    builder: (context, child, value) => Transform.translate(
+      offset: Offset(value.get('translate'), 0.0),
+      child: Opacity(
+          opacity: value.get('opacity'),
+          child: child
+      ),
+    ),
+  );
+}
+
 class MyHomePageState extends State {
   double contentWidth  = 0.0;
   double contentHeight = 0.0;
 
-  // フローティングアクションボタンの状態管理クラス
+  // スライドボタンの状態管理クラス
   MyCustomAnimationControl? hogeSlideButtonControl;
 
   ScrollController? hogeScrollController;
@@ -40,10 +108,10 @@ class MyHomePageState extends State {
     maxHogeScroll = hogeScrollController!.position.maxScrollExtent;
 
     if( hogeScroll < contentHeight / 5 ){
-      // フローティングアクションボタンを隠す
+      // スライドボタンを隠す
       hogeSlideButtonControl!.hide();
     } else {
-      // フローティングアクションボタンを表示させる
+      // スライドボタンを表示させる
       hogeSlideButtonControl!.show();
     }
   }
@@ -58,7 +126,7 @@ class MyHomePageState extends State {
   void initState() {
     super.initState();
 
-    // フローティングアクションボタンの状態管理クラス
+    // スライドボタンの状態管理クラス
     hogeSlideButtonControl = MyCustomAnimationControl( setState: setState, hidden: true );
 
     hogeScrollController = ScrollController();
@@ -83,19 +151,7 @@ class MyHomePageState extends State {
 
         // フローティングアクションボタンの位置
         FloatingActionButtonLocation floatingLocation = FloatingActionButtonLocation.endFloat;
-        bool mini = false;
-        switch( floatingLocation ){
-          case FloatingActionButtonLocation.miniCenterDocked:
-          case FloatingActionButtonLocation.miniCenterFloat:
-          case FloatingActionButtonLocation.miniCenterTop:
-          case FloatingActionButtonLocation.miniEndDocked:
-          case FloatingActionButtonLocation.miniEndFloat:
-          case FloatingActionButtonLocation.miniEndTop:
-          case FloatingActionButtonLocation.miniStartDocked:
-          case FloatingActionButtonLocation.miniStartFloat:
-          case FloatingActionButtonLocation.miniStartTop:
-            mini = true;
-        }
+        bool mini = floatingLocation.toString().contains('.mini');
 
         FloatingActionButton floating = test1( mini );
 //        FloatingActionButton floating = test2();
@@ -148,8 +204,8 @@ class MyHomePageState extends State {
         ));
       }
 
-      Widget floating = test8( this, contentWidth, contentHeight, hogeSlideButtonControl, false );
-//      Widget floating = test8( this, contentWidth, contentHeight, hogeSlideButtonControl, true );
+      Widget floating = test8( this, hogeSlideButtonControl, contentWidth, contentHeight, false );
+//      Widget floating = test8( this, hogeSlideButtonControl, contentWidth, contentHeight, true );
 
       return Scaffold(
         appBar: AppBar(
@@ -169,7 +225,7 @@ class MyHomePageState extends State {
   }
 }
 
-// フローティングアクションボタンの状態管理クラス
+// スライドボタンの状態管理クラス
 class MyCustomAnimationControl {
   Function(void Function()) setState;
   bool hidden;
