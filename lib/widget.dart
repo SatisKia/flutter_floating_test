@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 class MyFloatingActionButton extends ElevatedButton {
   MyFloatingActionButton(IconData icon, {
+    Key? key,
     Color foregroundColor = Colors.white,
     Color backgroundColor = Colors.blue,
     double elevation = 8.0,
     void Function()? onPressed,
-    Key? key
-  }) : super(key: key,
+  }) : super(
+    key: key,
     child: Icon(
         icon,
         color: foregroundColor
