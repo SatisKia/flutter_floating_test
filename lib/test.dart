@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simple_animations/simple_animations.dart';
 
 import 'main.dart';
+import 'utility.dart';
 import 'widget.dart';
 
 FloatingActionButton test1( bool mini ) {
